@@ -1,0 +1,5 @@
+= puppet-newrelic module
+
+{<img src='https://codex.cegeka.be/jenkins/job/puppet-newrelic/badge/icon' />}[https://codex.cegeka.be/jenkins/job/puppet-newrelic/]
+
+This is the newrelic module.
