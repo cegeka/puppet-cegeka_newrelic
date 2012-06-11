@@ -2,7 +2,7 @@
 
 {<img src='https://codex.cegeka.be/jenkins/job/puppet-newrelic/badge/icon' />}[https://codex.cegeka.be/jenkins/job/puppet-newrelic/]
 
-This module will install New Relic's Server monitor agent on your servers.
+This module can install New Relic's Server monitor agent on your servers.
 
 == Installation
 

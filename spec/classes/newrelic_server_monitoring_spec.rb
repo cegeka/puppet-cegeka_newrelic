@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe 'newrelic' do
+describe 'newrelic::server_monitoring' do
 
   context 'without a license_key specified' do
 
     it {
     	expect { subject }.to raise_error(
-      	Puppet::Error, /newrelic license_key not defined/
+      	Puppet::Error, /The license key associated with your New Relic account must be provided/
   	)}
 
   end
@@ -28,7 +28,7 @@ describe 'newrelic' do
 	
 		let (:params) { { :newrelic_license_key => '1234567890' } }
 
-		it { should contain_class 'newrelic' }
+		it { should contain_class 'newrelic::server_monitoring' }
     it { should contain_file('/etc/newrelic/nrsysmond.cfg') }
     it { should contain_package('newrelic-sysmond').with_ensure('present') }
     it { should contain_service('newrelic-sysmond').with_ensure('running') }
@@ -39,7 +39,7 @@ describe 'newrelic' do
 
 		let (:params) { { :newrelic_license_key => '1234567890', :newrelic_loglevel => 'debug' } }
 
-    it { should contain_class 'newrelic' }
+    it { should contain_class 'newrelic::server_monitoring' }
 		it { should contain_file('/etc/newrelic/nrsysmond.cfg') }
 		it { should contain_package('newrelic-sysmond').with_ensure('present') }
 	  it { should contain_service('newrelic-sysmond').with_ensure('running') }
