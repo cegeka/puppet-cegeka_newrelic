@@ -28,7 +28,7 @@
 # - Required: no
 # - Content: 'off' | 'severe' | 'warning' | 'info' | 'fine' | 'finer' | 'finest'
 #
-# [*newrelic_use_ssl*] The agent communicates with New Relic via http by default.  If you want to communicate via https to increase security, 
+# [*newrelic_use_ssl*] The agent communicates with New Relic via http by default.  If you want to communicate via https to increase security,
 #                      then turn on SSL by setting this value to true (default: false).
 # - Required: no
 # - Content: true | false
@@ -45,15 +45,15 @@
 #   newrelic_use_ssl        => true,
 # }
 #
-class newrelic::application_monitoring($newrelic_app_root_dir=undef, $newrelic_app_owner='root', $newrelic_app_group='root', 
-                                       $newrelic_license_key=undef, $newrelic_app_name='My Application', $newrelic_agent_loglevel='info', $newrelic_use_ssl=false) {
+class newrelic::application_monitoring($newrelic_app_root_dir=undef, $newrelic_app_owner='root', $newrelic_app_group='root',
+                                        $newrelic_license_key=undef, $newrelic_app_name='My Application', $newrelic_agent_loglevel='info', $newrelic_use_ssl=false) {
 
   if $newrelic_app_root_dir == undef {
-    fail("The root directory of the application server installation must be provided")
+    fail('The root directory of the application server installation must be provided')
   }
 
   if $newrelic_license_key == undef {
-    fail("The license key associated with your New Relic account must be provided")
+    fail('The license key associated with your New Relic account must be provided')
   }
 
   if ! ($newrelic_agent_loglevel in ['off' , 'severe' , 'warning' , 'info' , 'fine' , 'finer' , 'finest']) {
