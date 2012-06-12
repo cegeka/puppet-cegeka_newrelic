@@ -2,4 +2,29 @@
 
 {<img src='https://codex.cegeka.be/jenkins/job/puppet-newrelic/badge/icon' />}[https://codex.cegeka.be/jenkins/job/puppet-newrelic/]
 
-This is the newrelic module.
+This module can install New Relic's Server monitor agent on your servers.
+
+== Installation
+
+1. Sign up for an account at http://newrelic.com/signup if you haven't yet.
+2. Apply the `newrelic` class to any nodes you want the agent installed on
+3. Login to your New Relic dashboard and you should see your servers show up in a few minutes.
+
+== Recommended usage
+
+  class { 'newrelic::server_monitoring' :
+    newrelic_license_key  => '<your license key>',
+  }
+
+
+  class { 'newrelic::application_monitoring' :
+    newrelic_app_root_dir   => '/opt/appserver',
+    newrelic_app_owner      => '<your app user>',
+    newrelic_app_group      => '<your app group>',
+    newrelic_license_key    => '<your license key>',
+    newrelic_app_name       => '<your app name>',
+    newrelic_agent_loglevel => '<loglevel>',
+    newrelic_use_ssl        => true|false,
+  }
+
+
