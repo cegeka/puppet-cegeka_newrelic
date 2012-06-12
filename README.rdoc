@@ -12,8 +12,8 @@ This module can install New Relic's Server monitor agent on your servers.
 
 == Recommended usage
 
-  class { 'newrelic': 
-    newrelic_license_key => '<your license key>', 
+  class { 'newrelic::server_monitoring': 
+    newrelic_license_key => '<your license key>',
   }
 
 

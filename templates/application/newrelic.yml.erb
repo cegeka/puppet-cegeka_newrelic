@@ -75,7 +75,7 @@ common: &default_settings
   # asynchronously to the threads that process your application code,
   # so it should not impact response times.
   # Default is false.
-  ssl: <%= newrelic_use_ssl %>
+  ssl: <%= newrelic_use_ssl_real %>
   
   # Proxy settings for connecting to the New Relic server.
   #
