@@ -15,7 +15,7 @@ describe 'newrelic::application_monitoring' do
 
   context 'without a license_key specified' do
 
-		let (:params) { { :application_root_dir => '/opt/appserver' } }
+		let (:params) { { :newrelic_app_root_dir => '/opt/appserver' } }
 
     it {
     	expect { subject }.to raise_error(
@@ -26,7 +26,7 @@ describe 'newrelic::application_monitoring' do
 
   context 'without a valid agent loglevel' do
 
-		let (:params) { { :application_root_dir => '/opt/appserver', 
+		let (:params) { { :newrelic_app_root_dir => '/opt/appserver', 
 											:newrelic_license_key => '1234567890' , 
 											:newrelic_agent_loglevel => 'vverbosedebug'} }
 
@@ -39,7 +39,7 @@ describe 'newrelic::application_monitoring' do
 
   context 'without a valid use_ssl value' do
 
-		let (:params) { { :application_root_dir => '/opt/appserver', 
+		let (:params) { { :newrelic_app_root_dir => '/opt/appserver', 
                       :newrelic_license_key => '1234567890' , 
                       :newrelic_agent_loglevel => 'fine',
 											:newrelic_use_ssl => 'bla'} }
@@ -53,7 +53,7 @@ describe 'newrelic::application_monitoring' do
 
 	context 'with a valid installation directory and license_key' do
 	
-		let (:params) { { :application_root_dir => '/opt/appserver',
+		let (:params) { { :newrelic_app_root_dir => '/opt/appserver',
 											:newrelic_license_key => '1234567890' } }
 
 		it { should contain_class 'newrelic::application_monitoring' }
@@ -65,9 +65,9 @@ describe 'newrelic::application_monitoring' do
 
 	context 'with a valid installation directory, application owner and group, license_key and agent loglevel' do
 
-		let (:params) { { :application_root_dir => '/opt/appserver',
-											:application_owner => 'newrelic',
-											:application_group => 'newrelic',
+		let (:params) { { :newrelic_app_root_dir => '/opt/appserver',
+											:newrelic_app_owner => 'newrelic',
+											:newrelic_app_group => 'newrelic',
 											:newrelic_license_key => '1234567890', 
 											:newrelic_agent_loglevel => 'finer' } }
 

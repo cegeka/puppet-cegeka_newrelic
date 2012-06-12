@@ -4,15 +4,15 @@
 #
 # Parameters:
 #
-# [*application_root_dir*] The New Relic agent installation directory (no default).
+# [*newrelic_app_root_dir*] The New Relic agent installation directory (no default).
 # - Required: yes
 # - Content: String
 #
-# [*application_owner*] The owner of the New Relic agent installation directory (default: 'root').
+# [*newrelic_app_owner*] The owner of the New Relic agent installation directory (default: 'root').
 # - Required: yes
 # - Content: String
 #
-# [*application_group*] The group of the New Relic agent installation directory (default: 'root').
+# [*newrelic_app_group*] The group of the New Relic agent installation directory (default: 'root').
 # - Required: yes
 # - Content: String
 #
@@ -36,13 +36,19 @@
 # Sample Usage:
 #
 # class { 'newrelic::application_monitoring':
+#   newrelic_app_root_dir       => '/opt/appserver',
+#   newrelic_app_owner      => '<your app user>',
+#   newrelic_app_group      => '<your app group>',
+#   newrelic_license_key    => '<your license key>',
+#   newrelic_app_name       => '<your app name>',
+#   newrelic_agent_loglevel => '<loglevel>',
+#   newrelic_use_ssl        => true,
 # }
 #
-#
-class newrelic::application_monitoring($application_root_dir=undef, $application_owner='root', $application_group='root', 
+class newrelic::application_monitoring($newrelic_app_root_dir=undef, $newrelic_app_owner='root', $newrelic_app_group='root', 
                                        $newrelic_license_key=undef, $newrelic_app_name='My Application', $newrelic_agent_loglevel='info', $newrelic_use_ssl=false) {
 
-  if $application_root_dir == undef {
+  if $newrelic_app_root_dir == undef {
     fail("The root directory of the application server installation must be provided")
   }
 
@@ -61,31 +67,31 @@ class newrelic::application_monitoring($application_root_dir=undef, $application
     }
   }
 
-  file { "${application_root_dir}/newrelic" :
+  file { "${newrelic_app_root_dir}/newrelic" :
     ensure => directory,
-    owner  => $application_owner,
-    group  => $application_group,
+    owner  => $newrelic_app_owner,
+    group  => $newrelic_app_group,
   }
 
-  file { "${application_root_dir}/newrelic/logs" :
+  file { "${newrelic_app_root_dir}/newrelic/logs" :
     ensure  => directory,
-    owner   => $application_owner,
-    group   => $application_group,
-    require => File["${application_root_dir}/newrelic"],
+    owner   => $newrelic_app_owner,
+    group   => $newrelic_app_group,
+    require => File["${newrelic_app_root_dir}/newrelic"],
   }
 
-  file { "${application_root_dir}/newrelic/newrelic.jar" :
+  file { "${newrelic_app_root_dir}/newrelic/newrelic.jar" :
     ensure  => file,
-    owner   => $application_owner,
-    group   => $application_group,
+    owner   => $newrelic_app_owner,
+    group   => $newrelic_app_group,
     source  => "puppet:///modules/${module_name}/newrelic.jar",
-    require => File["${application_root_dir}/newrelic"],
+    require => File["${newrelic_app_root_dir}/newrelic"],
   }
 
-  file { "${application_root_dir}/newrelic/newrelic.yml" :
+  file { "${newrelic_app_root_dir}/newrelic/newrelic.yml" :
     ensure  => file,
-    owner   => $application_owner,
-    group   => $application_group,
+    owner   => $newrelic_app_owner,
+    group   => $newrelic_app_group,
     content => template("${module_name}/application/newrelic.yml.erb"),
   }
 
