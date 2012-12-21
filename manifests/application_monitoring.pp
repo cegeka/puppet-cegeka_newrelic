@@ -33,6 +33,12 @@
 # - Required: no
 # - Content: true | false
 #
+# [*newrelic_record_sql*] When transaction tracer is on, SQL statements can optionally be recorded. The recorder has three modes, "off" which sends no
+#                         SQL, "raw" which sends the SQL statement in its original form, and "obfuscated", which strips out numeric and string literals.
+#                         (default: obfuscated).
+# - Required: no
+# - Content: 'obfuscated' | 'raw' | 'off'
+#
 # Sample Usage:
 #
 # class { 'newrelic::application_monitoring':
@@ -42,11 +48,13 @@
 #   newrelic_license_key    => '<your license key>',
 #   newrelic_app_name       => '<your app name>',
 #   newrelic_agent_loglevel => '<loglevel>',
+#   newrelic_record_sql     => '<type>',
 #   newrelic_use_ssl        => true,
 # }
 #
 class newrelic::application_monitoring($newrelic_app_root_dir=undef, $newrelic_app_owner='root', $newrelic_app_group='root',
-                                        $newrelic_license_key=undef, $newrelic_app_name='My Application', $newrelic_agent_loglevel='info', $newrelic_use_ssl=false) {
+                                        $newrelic_license_key=undef, $newrelic_app_name='My Application', $newrelic_agent_loglevel='info', $newrelic_record_sql='obfuscated',
+                                        $newrelic_use_ssl=false) {
 
   if $newrelic_app_root_dir == undef {
     fail('The root directory of the application server installation must be provided')
@@ -58,6 +66,10 @@ class newrelic::application_monitoring($newrelic_app_root_dir=undef, $newrelic_a
 
   if ! ($newrelic_agent_loglevel in ['off' , 'severe' , 'warning' , 'info' , 'fine' , 'finer' , 'finest']) {
     fail("${newrelic_agent_loglevel} is not one of valid predefined values for agent loglevels")
+  }
+
+  if ! ($newrelic_record_sql in ['obfuscated' , 'raw' , 'off']) {
+    fail("${newrelic_record_sql} is not one of valid predefined values for record sql")
   }
 
   case $newrelic_use_ssl {
