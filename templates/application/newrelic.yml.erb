@@ -129,7 +129,7 @@ common: &default_settings
     # SQL, "raw" which sends the SQL statement in its original form,
     # and "obfuscated", which strips out numeric and string literals.
     # Default is obfuscated.
-    record_sql: obfuscated
+    record_sql: <%= newrelic_record_sql %>
 
     # Obfuscate only occurrences of specific SQL fields names.
     # This setting only applies if "record_sql" is set to "raw".
