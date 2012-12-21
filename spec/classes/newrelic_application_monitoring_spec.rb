@@ -26,8 +26,8 @@ describe 'newrelic::application_monitoring' do
 
   context 'without a valid agent loglevel' do
 
-		let (:params) { { :newrelic_app_root_dir => '/opt/appserver', 
-											:newrelic_license_key => '1234567890' , 
+		let (:params) { { :newrelic_app_root_dir => '/opt/appserver',
+											:newrelic_license_key => '1234567890' ,
 											:newrelic_agent_loglevel => 'vverbosedebug'} }
 
 		it {
@@ -37,10 +37,23 @@ describe 'newrelic::application_monitoring' do
 
 	end
 
+  context 'without a valid record_sql value' do
+
+		let (:params) { { :newrelic_app_root_dir => '/opt/appserver',
+                      :newrelic_license_key => '1234567890' ,
+                      :newrelic_agent_loglevel => 'fine',
+		:newrelic_record_sql => 'bla'} }
+
+		it {
+      expect { subject }.to raise_error(
+        Puppet::Error, /bla is not one of valid predefined values for record sql/
+    )}
+  end
+
   context 'without a valid use_ssl value' do
 
-		let (:params) { { :newrelic_app_root_dir => '/opt/appserver', 
-                      :newrelic_license_key => '1234567890' , 
+		let (:params) { { :newrelic_app_root_dir => '/opt/appserver',
+                      :newrelic_license_key => '1234567890' ,
                       :newrelic_agent_loglevel => 'fine',
 											:newrelic_use_ssl => 'bla'} }
 
@@ -52,7 +65,7 @@ describe 'newrelic::application_monitoring' do
 	end
 
 	context 'with a valid installation directory and license_key' do
-	
+
 		let (:params) { { :newrelic_app_root_dir => '/opt/appserver',
 											:newrelic_license_key => '1234567890' } }
 
@@ -63,16 +76,17 @@ describe 'newrelic::application_monitoring' do
 
 	end
 
-	context 'with a valid installation directory, application owner and group, license_key and agent loglevel' do
+	context 'with a valid installation directory, application owner and group, license_key record sql option and agent loglevel' do
 
 		let (:params) { { :newrelic_app_root_dir => '/opt/appserver',
 											:newrelic_app_owner => 'newrelic',
 											:newrelic_app_group => 'newrelic',
-											:newrelic_license_key => '1234567890', 
+											:newrelic_license_key => '1234567890',
+                                                                                        :newrelic_record_sql => 'raw',
 											:newrelic_agent_loglevel => 'finer' } }
 
     it { should contain_class 'newrelic::application_monitoring' }
-		it do 
+		it do
     	should contain_file('/opt/appserver/newrelic').with({
       	'ensure' => 'directory',
       	'owner'  => 'newrelic',
