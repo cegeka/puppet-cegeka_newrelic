@@ -105,7 +105,6 @@ class newrelic::application_monitoring($newrelic_app_root_dir=undef, $newrelic_a
     owner   => $newrelic_app_owner,
     group   => $newrelic_app_group,
     content => template("${module_name}/application/newrelic.yml.erb"),
-    replace => false,
   }
 
 }
