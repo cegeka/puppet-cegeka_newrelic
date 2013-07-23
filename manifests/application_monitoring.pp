@@ -4,6 +4,10 @@
 #
 # Parameters:
 #
+# [*newrelic_version*] The version of the New Relic agent (no default).
+# - Required: yes
+# - Content: String
+#
 # [*newrelic_app_root_dir*] The New Relic agent installation directory (no default).
 # - Required: yes
 # - Content: String
@@ -42,7 +46,8 @@
 # Sample Usage:
 #
 # class { 'newrelic::application_monitoring':
-#   newrelic_app_root_dir       => '/opt/appserver',
+#   newrelic_version        => '2.18.0',
+#   newrelic_app_root_dir   => '/opt/appserver',
 #   newrelic_app_owner      => '<your app user>',
 #   newrelic_app_group      => '<your app group>',
 #   newrelic_license_key    => '<your license key>',
@@ -52,9 +57,13 @@
 #   newrelic_use_ssl        => true,
 # }
 #
-class newrelic::application_monitoring($newrelic_app_root_dir=undef, $newrelic_app_owner='root', $newrelic_app_group='root',
+class newrelic::application_monitoring($newrelic_version=undef, $newrelic_app_root_dir=undef, $newrelic_app_owner='root', $newrelic_app_group='root',
                                         $newrelic_license_key=undef, $newrelic_app_name='My Application', $newrelic_agent_loglevel='info', $newrelic_record_sql='obfuscated',
                                         $newrelic_use_ssl=false) {
+
+  if $newrelic_version == undef {
+    fail('The version of the New Relic agent must be provided')
+  }
 
   if $newrelic_app_root_dir == undef {
     fail('The root directory of the application server installation must be provided')
@@ -92,11 +101,11 @@ class newrelic::application_monitoring($newrelic_app_root_dir=undef, $newrelic_a
     require => File["${newrelic_app_root_dir}/newrelic"],
   }
 
-  file { "${newrelic_app_root_dir}/newrelic/newrelic.jar" :
+  file { "${newrelic_app_root_dir}/newrelic/newrelic-${newrelic_version}.jar" :
     ensure  => file,
     owner   => $newrelic_app_owner,
     group   => $newrelic_app_group,
-    source  => "puppet:///modules/${module_name}/newrelic.jar",
+    source  => "puppet:///modules/${module_name}/newrelic-${newrelic_version}.jar",
     require => File["${newrelic_app_root_dir}/newrelic"],
   }
 
