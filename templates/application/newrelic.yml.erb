@@ -14,7 +14,7 @@ common: &default_settings
   # You must specify the license key associated with your New Relic
   # account.  This key binds your Agent's data to your account in the
   # New Relic service.
-  license_key: '<%= newrelic_license_key %>'
+  license_key: '<%= @newrelic_license_key %>'
 
   # Agent Enabled
   # Use this setting to force the agent to run or not run.
@@ -42,14 +42,14 @@ common: &default_settings
   # For example, to report data to"My Application" and "My Application 2" use this:
   # app_name: My Application;My Application 2
   # This setting is required.
-  app_name: <%= newrelic_app_name %>
+  app_name: <%= @newrelic_app_name %>
 
   # The agent uses its own log file to keep its logging
   # separate from that of your application.  Specify the log level here.
   # This setting is dynamic, so changes do not require restarting your application.
   # The levels in increasing order of verboseness are: off, severe, warning, info, fine, finer, finest
   # Default is info.
-  log_level: <%= newrelic_agent_loglevel %>
+  log_level: <%= @newrelic_agent_loglevel %>
 
   # Log all data to and from New Relic in plain text.
   # This setting is dynamic, so changes do not require restarting your application.
@@ -80,7 +80,7 @@ common: &default_settings
   # asynchronously to the threads that process your application code,
   # so it should not impact response times.
   # Default is false.
-  ssl: <%= newrelic_use_ssl_real %>
+  ssl: <%= @newrelic_use_ssl_real %>
 
   # Proxy settings for connecting to the New Relic server.
   #
@@ -129,7 +129,7 @@ common: &default_settings
     # SQL, "raw" which sends the SQL statement in its original form,
     # and "obfuscated", which strips out numeric and string literals.
     # Default is obfuscated.
-    record_sql: <%= newrelic_record_sql %>
+    record_sql: <%= @newrelic_record_sql %>
 
     # Obfuscate only occurrences of specific SQL fields names.
     # This setting only applies if "record_sql" is set to "raw".
