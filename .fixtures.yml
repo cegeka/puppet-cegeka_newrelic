@@ -1,0 +1,5 @@
+fixtures:
+  symlinks:
+    "newrelic": "#{source_dir}"
+
+
