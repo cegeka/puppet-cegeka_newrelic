@@ -19,7 +19,16 @@ common: &default_settings
   # Agent Enabled
   # Use this setting to force the agent to run or not run.
   # Default is true.
-  # agent_enabled: true
+  agent_enabled: true
+
+  # Set the name of your application as you'd like it show up in New Relic.
+  # if enable_auto_app_naming is false, the agent reports all data to this application.
+  # Otherwise, the agent reports only background tasks (transactions for non-web applications) to this application.
+  # To report data to more than one application, separate the application names with ";".
+  # For example, to report data to"My Application" and "My Application 2" use this:
+  # app_name: My Application;My Application 2
+  # This setting is required.
+  app_name: <%= @newrelic_app_name %>
 
   # Set to true to enable support for auto app naming.
   # The name of each web app is detected automatically
@@ -34,16 +43,6 @@ common: &default_settings
   # Default is true.
   enable_auto_transaction_naming: true
 
-
-  # Set the name of your application as you'd like it show up in New Relic.
-  # if enable_auto_app_naming is false, the agent reports all data to this application.
-  # Otherwise, the agent reports only background tasks (transactions for non-web applications) to this application.
-  # To report data to more than one application, separate the application names with ";".
-  # For example, to report data to"My Application" and "My Application 2" use this:
-  # app_name: My Application;My Application 2
-  # This setting is required.
-  app_name: <%= @newrelic_app_name %>
-
   # The agent uses its own log file to keep its logging
   # separate from that of your application.  Specify the log level here.
   # This setting is dynamic, so changes do not require restarting your application.
@@ -54,7 +53,7 @@ common: &default_settings
   # Log all data to and from New Relic in plain text.
   # This setting is dynamic, so changes do not require restarting your application.
   # Default is false.
-  #audit_mode: true
+  audit_mode: false
 
   # The number of log files to use.
   # Default is 1.
@@ -94,6 +93,10 @@ common: &default_settings
   # proxy_user: username
   # proxy_password: password
 
+  # Limits the number of lines to capture for each stack trace.
+  # Default is 30
+  max_stack_trace_lines: 30
+
   # Tells transaction tracer and error collector (when enabled)
   # whether or not to capture HTTP params.  When true, frameworks can
   # exclude HTTP parameters from being captured.
@@ -103,6 +106,17 @@ common: &default_settings
   # Tells transaction tracer and error collector to not to collect
   # specific http request parameters.
   # ignored_params: credit_card, ssn, password
+
+  # Similar to capture_params but for message handling.
+  # When processing a message through a MessageListener, if enabled,
+  # custom parameters set on the message will be captured subject to
+  # the filters on ignored_messaging_params.
+  # Default is false.
+  capture_messaging_params: false
+
+  # Tells transaction tracer and error collector to not to collect
+  # specific message properties.
+  #ignored_messaging_params: userid, authtoken
 
   # Transaction tracer captures deep information about slow
   # transactions and sends this to the New Relic service once a
@@ -173,16 +187,39 @@ common: &default_settings
     # Default is true.
     enabled: true
 
-    # To stop specific exceptions from reporting to New Relic, set this property
-    # to a comma separated list of full class names.
-    #
-    # ignore_errors:
+    # Use this property to exclude specific exceptions from being reported as errors
+    # by providing a comma separated list of full class names.
+    # The default is to exclude akka.actor.ActorKilledException. If you want to override
+    # this, you must provide any new value as an empty list is ignored.
+    ignore_errors: akka.actor.ActorKilledException
 
-    # To stop specific http status codes from being reporting to New Relic as errors,
-    # set this property to a comma separated list of status codes to ignore.
-    # When this property is commented out it defaults to ignoring 404s.
-    #
-    # ignore_status_codes: 404
+    # Use this property to exclude specific http status codes from being reported as errors
+    # by providing a comma separated list of status codes.
+    # The default is to exclude 404s. If you want to override
+    # this, you must provide any new value as an empty list is ignored.
+    ignore_status_codes: 404
+
+  # Analytics Events are used for Histograms and Percentiles. Unaggregated data is collected
+  # for each web transaction and sent to the server on harvest.
+  analytics_events:
+
+    # Set to false to disable analytics events.
+    # Default is true.
+    enabled: true
+
+    # Events are collected up to the configured amount. Afterwards, events are sampled to
+    # maintain an even distribution across the harvest cycle. Largest value accepted is 10000.
+    # Default is 2000.  Setting to 0 will disable.
+    max_samples_stored: 2000
+
+  # Cross Application Tracing adds request and response headers to
+  # external calls using supported HTTP libraries to provide better
+  # performance data when calling applications monitored by other New Relic Agents.
+  cross_application_tracer:
+
+    # Set to false to disable cross application tracing.
+    # Default is true.
+    enabled: true
 
   # Thread profiler measures wall clock time, CPU time, and method call counts
   # in your application's threads as they run.
@@ -192,7 +229,6 @@ common: &default_settings
     # Default is true.
     enabled: true
 
-  #============================== Browser Monitoring ===============================
   # New Relic Real User Monitoring gives you insight into the performance real users are
   # experiencing with your website. This is accomplished by measuring the time it takes for
   # your users' browsers to download and render your web pages by injecting a small amount
