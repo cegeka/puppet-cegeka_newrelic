@@ -17,7 +17,7 @@ This module can install New Relic's Server monitor agent on your servers.
   }
 
   newrelic::application_monitoring { 'newrelic application monitoring for appserver':
-	  newrelic_version        => '3.5.1',
+    newrelic_version        => '3.5.1',
     newrelic_app_root_dir   => '/opt/appserver',
     newrelic_app_owner      => '<your app user>',
     newrelic_app_group      => '<your app group>',
