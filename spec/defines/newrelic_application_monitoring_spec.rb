@@ -82,7 +82,6 @@ describe 'newrelic::application_monitoring' do
 
 	context 'with a valid version, installation directory and license_key' do
 
-
 		let (:params) { { :newrelic_version => '2.18.0',
                       :newrelic_app_root_dir => '/opt/appserver',
 											:newrelic_license_key => '1234567890' } }
