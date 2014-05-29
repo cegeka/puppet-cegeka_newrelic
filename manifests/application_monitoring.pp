@@ -1,6 +1,6 @@
 # Define: newrelic::application_monitoring
 #
-# This define manages the installation of newrelic::application_monitoring
+# This defined type manages the installation of newrelic::application_monitoring
 #
 # Parameters:
 #
