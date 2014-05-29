@@ -1,6 +1,6 @@
-# Class: newrelic::application_monitoring
+# Define: newrelic::application_monitoring
 #
-# This class manages the installation of newrelic::application_monitoring
+# This define manages the installation of newrelic::application_monitoring
 #
 # Parameters:
 #
@@ -45,7 +45,7 @@
 #
 # Sample Usage:
 #
-# class { 'newrelic::application_monitoring':
+# newrelic::application_monitoring { 'newrelic application monitoring':
 #   newrelic_version        => '2.18.0',
 #   newrelic_app_root_dir   => '/opt/appserver',
 #   newrelic_app_owner      => '<your app user>',
@@ -57,9 +57,17 @@
 #   newrelic_use_ssl        => true,
 # }
 #
-class newrelic::application_monitoring($newrelic_version=undef, $newrelic_app_root_dir=undef, $newrelic_app_owner='root', $newrelic_app_group='root',
-                                        $newrelic_license_key=undef, $newrelic_app_name='My Application', $newrelic_agent_loglevel='info', $newrelic_record_sql='obfuscated',
-                                        $newrelic_use_ssl=false) {
+define newrelic::application_monitoring(
+  $newrelic_version=undef,
+  $newrelic_app_root_dir=undef,
+  $newrelic_app_owner='root',
+  $newrelic_app_group='root',
+  $newrelic_license_key=undef,
+  $newrelic_app_name='My Application',
+  $newrelic_agent_loglevel='info',
+  $newrelic_record_sql='obfuscated',
+  $newrelic_use_ssl=false
+) {
 
   if $newrelic_version == undef {
     fail('The version of the New Relic agent must be provided')
