@@ -22,7 +22,11 @@
 #   newrelic_license_key => '<insert license key here>',
 # }
 #
-class newrelic::server_monitoring($newrelic_license_key=undef, $newrelic_loglevel='info', $newrelic_logfile='/var/log/newrelic/nrsysmond.log') {
+class newrelic::server_monitoring(
+  $newrelic_license_key=undef,
+  $newrelic_loglevel='info',
+  $newrelic_logfile='/var/log/newrelic/nrsysmond.log'
+) {
 
   if $newrelic_license_key == undef {
     fail('The license key associated with your New Relic account must be provided')

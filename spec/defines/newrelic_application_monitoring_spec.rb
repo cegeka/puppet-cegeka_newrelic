@@ -4,6 +4,8 @@ require 'spec_helper'
 
 describe 'newrelic::application_monitoring' do
 
+  let (:title) { 'newrelic application monitoring' }
+
   context 'without a version specified' do
 
 		it {
@@ -84,7 +86,6 @@ describe 'newrelic::application_monitoring' do
                       :newrelic_app_root_dir => '/opt/appserver',
 											:newrelic_license_key => '1234567890' } }
 
-		it { should contain_class 'newrelic::application_monitoring' }
 		it { should contain_file '/opt/appserver/newrelic' }
 		it { should contain_file '/opt/appserver/newrelic/newrelic-2.18.0.jar' }
 		it { should contain_file '/opt/appserver/newrelic/newrelic.yml' }
@@ -101,7 +102,6 @@ describe 'newrelic::application_monitoring' do
                       :newrelic_record_sql => 'raw',
 											:newrelic_agent_loglevel => 'finer' } }
 
-    it { should contain_class 'newrelic::application_monitoring' }
 		it do
     	should contain_file('/opt/appserver/newrelic').with({
       	'ensure' => 'directory',
