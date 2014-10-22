@@ -43,6 +43,12 @@
 # - Required: no
 # - Content: 'obfuscated' | 'raw' | 'off'
 #
+# [*newrelic_environments*] New Relic applies settings in the common stanza to each of these environments. You can select other environments as the default
+#                           by setting the newrelic.environment system property to the environment name. For example -Dnewrelic.environment=acceptance
+#                           (default: production)
+# - Required: no
+# - Content: array of hashes
+#
 # Sample Usage:
 #
 # newrelic::application_monitoring { 'newrelic application monitoring':
@@ -55,6 +61,10 @@
 #   newrelic_agent_loglevel => '<loglevel>',
 #   newrelic_record_sql     => '<type>',
 #   newrelic_use_ssl        => true,
+#   newrelic_environments   => [
+#                               { 'name' => 'acceptance', 'values' => { '<<' => '*default_settings', 'app_name' => 'My Application (Acceptance)' } },
+#                               { 'name' => 'production', 'values' => { '<<' => '*default_settings' } }
+#                              ]
 # }
 #
 define newrelic::application_monitoring(
@@ -66,7 +76,8 @@ define newrelic::application_monitoring(
   $newrelic_app_name='My Application',
   $newrelic_agent_loglevel='info',
   $newrelic_record_sql='obfuscated',
-  $newrelic_use_ssl=false
+  $newrelic_use_ssl=false,
+  $newrelic_environments=[{ 'name' => 'production', 'values' => { '<<' => '*default_settings' } }]
 ) {
 
   if $newrelic_version == undef {
