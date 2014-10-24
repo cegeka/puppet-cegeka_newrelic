@@ -120,6 +120,13 @@ define newrelic::application_monitoring(
     require => File["${newrelic_app_root_dir}/newrelic"],
   }
 
+  file { "${newrelic_app_root_dir}/newrelic/extensions" :
+    ensure  => directory,
+    owner   => $newrelic_app_owner,
+    group   => $newrelic_app_group,
+    require => File["${newrelic_app_root_dir}/newrelic"],
+  }
+
   file { "${newrelic_app_root_dir}/newrelic/newrelic-${newrelic_version}.jar" :
     ensure  => file,
     owner   => $newrelic_app_owner,
