@@ -135,11 +135,14 @@ define newrelic::application_monitoring(
     require => File["${newrelic_app_root_dir}/newrelic"],
   }
 
+  case $newrelic_version {
+    '3.40.0': { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.3.40.0.erb" }
+    default:  { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.erb" }
+  }
   file { "${newrelic_app_root_dir}/newrelic/newrelic.yml" :
     ensure  => file,
     owner   => $newrelic_app_owner,
     group   => $newrelic_app_group,
-    content => template("${module_name}/application/newrelic.yml.erb"),
+    content => template($newrelic_yaml_config_template),
   }
-
 }

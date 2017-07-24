@@ -24,6 +24,7 @@
 #
 class newrelic::server_monitoring(
   $newrelic_license_key=undef,
+  $newrelic_sysmond_version='present',
   $newrelic_loglevel='info',
   $newrelic_logfile='/var/log/newrelic/nrsysmond.log'
 ) {
@@ -36,8 +37,13 @@ class newrelic::server_monitoring(
     fail("${newrelic_loglevel} is not one of valid predefined values for loglevels")
   }
 
+  case $newrelic_sysmond_version {
+    '2.3.0.132-1': { $newrelic_sysmond_config_template = "${module_name}/server/nrsysmond.cfg.2.3.0.erb" }
+    default:       { $newrelic_sysmond_config_template = "${module_name}/server/nrsysmond.cfg.erb" }
+  }
+
   package { 'newrelic-sysmond':
-    ensure  => present,
+    ensure  => $newrelic_sysmond_version,
   }
 
   file { '/etc/newrelic/nrsysmond.cfg':
@@ -45,7 +51,7 @@ class newrelic::server_monitoring(
     owner   => root,
     group   => newrelic,
     mode    => '0640',
-    content => template("${module_name}/server/nrsysmond.cfg.erb"),
+    content => template($newrelic_sysmond_config_template),
     notify  => Service['newrelic-sysmond'],
     require => Package['newrelic-sysmond'],
   }
