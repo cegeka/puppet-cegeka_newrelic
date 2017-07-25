@@ -45,7 +45,7 @@ class newrelic::server_monitoring(
     owner   => root,
     group   => newrelic,
     mode    => '0640',
-    content => template('${module_name}/server/nrsysmond.cfg.erb'),
+    content => template("${module_name}/server/nrsysmond.cfg.erb"),
     notify  => Service['newrelic-sysmond'],
     require => Package['newrelic-sysmond'],
   }
