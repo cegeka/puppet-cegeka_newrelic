@@ -257,7 +257,7 @@ common: &default_settings
 <% if @newrelic_environments %>
 <% @newrelic_environments.each do |environment| -%>
 <%= environment['name'] %>:
-<% environment['values'].each do |option,value| -%>
+<% environment['values'].sort.each do |option,value| -%>
   <%= option %>: <%= value %>
 <% end -%>
 <% end -%>
