@@ -61,6 +61,7 @@
 #   newrelic_agent_loglevel => '<loglevel>',
 #   newrelic_record_sql     => '<type>',
 #   newrelic_use_ssl        => true,
+#   newrelic_enable_distributed_tracing => true
 #   newrelic_environments   => [
 #                               { 'name' => 'acceptance', 'values' => { '<<' => '*default_settings', 'app_name' => 'My Application (Acceptance)' } },
 #                               { 'name' => 'production', 'values' => { '<<' => '*default_settings' } }
@@ -78,6 +79,7 @@ define cegeka_newrelic::application_monitoring(
   $newrelic_agent_loglevel='info',
   $newrelic_record_sql='obfuscated',
   $newrelic_use_ssl=false,
+  $newrelic_enable_distributed_tracing=true,
   $newrelic_environments=[{ 'name' => 'production', 'values' => { '<<' => '*default_settings' } }]
 ) {
 

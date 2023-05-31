@@ -242,6 +242,10 @@ common: &default_settings
     # Default is true.
     enabled: true
 
+<% if @newrelic_enable_distributed_tracing == false %>
+distributed_tracing:
+    enabled: <%= @newrelic_enable_distributed_tracing %>
+<% end -%>
 # Application Environments
 # ------------------------------------------
 # Environment specific settings are in this section.
