@@ -1,4 +1,6 @@
 #
+# This file is a copy of the newrelic.yaml we had; it still requires update to 8.4.0
+#
 # This file configures the New Relic Agent.  New Relic monitors
 # Java applications with deep visibility and low overhead.  For more
 # information, visit www.newrelic.com.
@@ -243,7 +245,7 @@ common: &default_settings
     enabled: true
 
 <% if @newrelic_enable_distributed_tracing == false %>
-distributed_tracing:
+  distributed_tracing:
     enabled: <%= @newrelic_enable_distributed_tracing %>
 <% end -%>
 # Application Environments

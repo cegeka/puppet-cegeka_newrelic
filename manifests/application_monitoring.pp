@@ -61,6 +61,7 @@
 #   newrelic_agent_loglevel => '<loglevel>',
 #   newrelic_record_sql     => '<type>',
 #   newrelic_use_ssl        => true,
+#   $newrelic_enable_cross_application_tracer=false,
 #   newrelic_enable_distributed_tracing => true
 #   newrelic_environments   => [
 #                               { 'name' => 'acceptance', 'values' => { '<<' => '*default_settings', 'app_name' => 'My Application (Acceptance)' } },
@@ -79,8 +80,10 @@ define cegeka_newrelic::application_monitoring(
   $newrelic_agent_loglevel='info',
   $newrelic_record_sql='obfuscated',
   $newrelic_use_ssl=false,
+  $newrelic_enable_cross_application_tracer=false,
   $newrelic_enable_distributed_tracing=true,
-  $newrelic_environments=[{ 'name' => 'production', 'values' => { '<<' => '*default_settings' } }]
+  $newrelic_environments=[{ 'name' => 'production', 'values' => { '<<' => '*default_settings' } }],
+  $newrelic_use_versioned_configfile=true,
 ) {
 
   if ($ensure == 'present' and $newrelic_version == undef) {
@@ -143,15 +146,21 @@ define cegeka_newrelic::application_monitoring(
     require => File["${newrelic_app_root_dir}/newrelic"],
   }
 
-  case $newrelic_version {
-    '3.40.0': { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.3.40.0.erb" }
-    '3.42.0': { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.3.42.0.erb" }
-    default:  { $newrelic_yaml_config_template = "${module_name}/application/newrelic.yml.erb" }
-  }
-  file { "${newrelic_app_root_dir}/newrelic/newrelic.yml" :
-    ensure  => $ensure,
-    owner   => $newrelic_app_owner,
-    group   => $newrelic_app_group,
-    content => template($newrelic_yaml_config_template),
+  if $newrelic_use_versioned_configfile {
+    file { "${newrelic_app_root_dir}/newrelic/newrelic.yml" :
+      ensure  => $ensure,
+      owner   => $newrelic_app_owner,
+      group   => $newrelic_app_group,
+      content => multitemplate( "${module_name}/application/newrelic.yml.${newrelic_version}.erb",
+                                "${module_name}/application/newrelic.yml.erb",
+                              ),
+    }
+  }else{
+    file { "${newrelic_app_root_dir}/newrelic/newrelic.yml" :
+      ensure  => $ensure,
+      owner   => $newrelic_app_owner,
+      group   => $newrelic_app_group,
+      content => template("${module_name}/application/newrelic.yml.erb"),
+    }
   }
 }
