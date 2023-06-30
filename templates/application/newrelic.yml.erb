@@ -240,7 +240,7 @@ common: &default_settings
     auto_instrument: false
     # Set this attribute to false to prevent injection of the monitoring JavaScript.
     # Default is true.
-    enabled: true
+    enabled: <%= @newrelic_enable_browser_monitoring %>
 
 <% if @newrelic_enable_distributed_tracing == false %>
 distributed_tracing:

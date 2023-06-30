@@ -1,7 +1,5 @@
 #
-# This file is a copy of the newrelic.yaml we had; it still requires update to 8.4.0
-#
-# This file configures the New Relic Agent.  New Relic monitors
+# This file configures the New Relic Agent 8.4.0.  New Relic monitors
 # Java applications with deep visibility and low overhead.  For more
 # information, visit www.newrelic.com.
 #
@@ -32,6 +30,11 @@ common: &default_settings
   # This setting is required.
   app_name: <%= @newrelic_app_name %>
 
+  # To enable high security, set this property to true. When in high
+  # security mode, the agent will use SSL and obfuscated SQL. Additionally,
+  # request parameters and message parameters will not be sent to New Relic.
+  high_security: false
+
   # Set to true to enable support for auto app naming.
   # The name of each web app is detected automatically
   # and the agent reports data separately for each one.
@@ -61,6 +64,10 @@ common: &default_settings
   # Default is 1.
   log_file_count: 2
 
+  # Override other log rolling configuration and roll the logs daily.
+  # Default is false.
+  log_daily: false
+
   # The maximum number of bytes to write to any one log file.
   # Default is 0 (no limit).
   log_limit_in_kbytes: 102400
@@ -72,16 +79,6 @@ common: &default_settings
   # The log file directory.
   # Default is the logs directory in the newrelic.jar parent directory.
   #log_file_path:
-
-  # The agent communicates with New Relic via http by
-  # default.  If you want to communicate via https to increase
-  # security, then turn on SSL by setting this value to true.  Note,
-  # this will result in increased CPU overhead to perform the
-  # encryption involved in SSL communication, but this work is done
-  # asynchronously to the threads that process your application code,
-  # so it should not impact response times.
-  # Default is false.
-  ssl: <%= @newrelic_use_ssl_real %>
 
   # Proxy settings for connecting to the New Relic server.
   #
@@ -98,6 +95,22 @@ common: &default_settings
   # Limits the number of lines to capture for each stack trace.
   # Default is 30
   max_stack_trace_lines: 30
+
+  # Provides the ability to configure the attributes sent to New Relic. These
+  # attributes can be found in transaction traces, traced errors, Insight's
+  # transaction events, and Insight's page views.
+  attributes:
+
+    # When true, attributes will be sent to New Relic. The default is true.
+    enabled: true
+
+    #A comma separated list of attribute keys whose values should
+    # be sent to New Relic.
+    #include:
+
+    # A comma separated list of attribute keys whose values should
+    # not be sent to New Relic.
+    #exclude:
 
   # Tells transaction tracer and error collector (when enabled)
   # whether or not to capture HTTP params.  When true, frameworks can
@@ -201,18 +214,61 @@ common: &default_settings
     # this, you must provide any new value as an empty list is ignored.
     ignore_status_codes: 404
 
-  # Analytics Events are used for Histograms and Percentiles. Unaggregated data is collected
+  # Transaction Events are used for Histograms and Percentiles. Un-aggregated data is collected
   # for each web transaction and sent to the server on harvest.
-  analytics_events:
+  transaction_events:
 
-    # Set to false to disable analytics events.
+    # Set to false to disable transaction events.
     # Default is true.
     enabled: true
 
     # Events are collected up to the configured amount. Afterwards, events are sampled to
-    # maintain an even distribution across the harvest cycle. Largest value accepted is 10000.
+    # maintain an even distribution across the harvest cycle.
     # Default is 2000.  Setting to 0 will disable.
     max_samples_stored: 2000
+
+  # Distributed tracing lets you see the path that a request takes through your distributed system.
+  # This replaces the legacy Cross Application Tracing feature.
+  distributed_tracing:
+
+    # Set to false to disable distributed tracing.
+    # Default is true.
+    enabled: <%= @newrelic_enable_distributed_tracing %>
+
+    # Agent versions 5.10.0+ utilize both the newrelic header and W3C Trace Context headers for distributed tracing.
+    # The newrelic distributed tracing header allows interoperability with older agents that don't support W3C Trace Context headers.
+    # Agent versions that support W3C Trace Context headers will prioritize them over newrelic headers for distributed tracing.
+    # If you do not want to utilize the newrelic header, setting this to true will result in the agent excluding the newrelic header
+    # and only using W3C Trace Context headers for distributed tracing.
+    # Default is false.
+    exclude_newrelic_header: false
+
+  # New Relic's distributed tracing UI uses Span events to display traces across different services.
+  # Span events capture attributes that describe execution context and provide linking metadata.
+  # Span events require distributed tracing to be enabled.
+  span_events:
+
+    # Set to false to disable Span events.
+    # Default is true.
+    enabled: true
+
+    # Determines the number of Span events that can be captured during an agent harvest cycle.
+    # Increasing the number of Span events can lead to additional agent overhead. A maximum value may be imposed server side by New Relic.
+    # Default is 2000
+    max_samples_stored: 2000
+
+    # Provides the ability to filter the attributes attached to Span events.
+    # Custom attributes can be added to Span events using the NewRelic.getAgent().getTracedMethod().addCustomAttribute(...) API.
+    attributes:
+
+      # When true, attributes will be sent to New Relic. The default is true.
+      enabled: true
+
+      # A comma separated list of attribute keys whose values should be sent to New Relic.
+      #include:
+
+      # A comma separated list of attribute keys whose values should not be sent to New Relic.
+      #exclude:
 
   # Cross Application Tracing adds request and response headers to
   # external calls using supported HTTP libraries to provide better
@@ -221,7 +277,7 @@ common: &default_settings
 
     # Set to false to disable cross application tracing.
     # Default is true.
-    enabled: true
+    enabled: <%= @newrelic_enable_cross_application_tracer %>
 
   # Thread profiler measures wall clock time, CPU time, and method call counts
   # in your application's threads as they run.
@@ -236,18 +292,59 @@ common: &default_settings
   # your users' browsers to download and render your web pages by injecting a small amount
   # of JavaScript code into the header and footer of each page.
   browser_monitoring:
-    # By default the agent automatically inserts API calls in compiled JSPs to
-    # inject the monitoring JavaScript into web pages.
-    # Set this attribute to false to turn off this behavior.
-    auto_instrument: false
-    # Set this attribute to false to prevent injection of the monitoring JavaScript.
-    # Default is true.
-    enabled: true
 
-<% if @newrelic_enable_distributed_tracing == false %>
-  distributed_tracing:
-    enabled: <%= @newrelic_enable_distributed_tracing %>
-<% end -%>
+    # By default the agent automatically inserts API calls in compiled JSPs to
+    # inject the monitoring JavaScript into web pages. Not all rendering engines are supported.
+    # See https://docs.newrelic.com/docs/agents/java-agent/instrumentation/new-relic-browser-java-agent#manual_instrumentation
+    # for instructions to add these manually to your pages.
+    # Set this attribute to false to turn off this behavior.
+    auto_instrument: true
+
+ # Class transformer can be used to disable all agent instrumentation or specific instrumentation modules.
+  # All instrumentation modules can be found here: https://github.com/newrelic/newrelic-java-agent/tree/main/instrumentation
+  class_transformer:
+
+    # This instrumentation reports the name of the user principal returned from
+    # HttpServletRequest.getUserPrincipal() when servlets and filters are invoked.
+    com.newrelic.instrumentation.servlet-user:
+      enabled: false
+
+    com.newrelic.instrumentation.spring-aop-2:
+      enabled: false
+
+    # This instrumentation reports metrics for resultset operations.
+    com.newrelic.instrumentation.jdbc-resultset:
+      enabled: false
+
+    # Classes loaded by classloaders in this list will not be instrumented.
+    # This is a useful optimization for runtimes which use classloaders to
+    # load dynamic classes which the agent would not instrument.
+    classloader_excludes:
+      groovy.lang.GroovyClassLoader$InnerLoader,
+      org.codehaus.groovy.runtime.callsite.CallSiteClassLoader,
+      com.collaxa.cube.engine.deployment.BPELClassLoader,
+      org.springframework.data.convert.ClassGeneratingEntityInstantiator$ObjectInstantiatorClassGenerator,
+      org.mvel2.optimizers.impl.asm.ASMAccessorOptimizer$ContextClassLoader,
+      gw.internal.gosu.compiler.SingleServingGosuClassLoader,
+
+  # Real-time profiling using Java Flight Recorder (JFR).
+  # This feature reports dimensional metrics to the ingest endpoint configured by
+  # metric_ingest_uri and events to the ingest endpoint configured by event_ingest_uri.
+  # Both ingest endpoints default to US production but they will be automatically set to EU
+  # production when using an EU license key. Other ingest endpoints can be configured manually.
+  # Requires a JVM that provides the JFR library.
+  jfr:
+
+    # Set to true to enable Real-time profiling with JFR.
+    # Default is false.
+    enabled: false
+
+    # Set to true to enable audit logging which will display all JFR metrics and events in each harvest batch.
+    # Audit logging is extremely verbose and should only be used for troubleshooting purposes.
+    # Default is false.
+    audit_logging: false
+
+
 # Application Environments
 # ------------------------------------------
 # Environment specific settings are in this section.

@@ -82,6 +82,7 @@ define cegeka_newrelic::application_monitoring(
   $newrelic_use_ssl=false,
   $newrelic_enable_cross_application_tracer=false,
   $newrelic_enable_distributed_tracing=true,
+  $newrelic_enable_browser_monitoring=true,
   $newrelic_environments=[{ 'name' => 'production', 'values' => { '<<' => '*default_settings' } }],
   $newrelic_use_versioned_configfile=true,
 ) {
