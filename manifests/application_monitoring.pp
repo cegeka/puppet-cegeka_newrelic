@@ -126,9 +126,9 @@ define cegeka_newrelic::application_monitoring(
   }
 
   file { "${newrelic_app_root_dir}/newrelic/newrelic.jar" :
-    ensure => link,
-    owner  => $newrelic_app_owner,
-    group  => $newrelic_app_group,
+    ensure  => link,
+    owner   => $newrelic_app_owner,
+    group   => $newrelic_app_group,
     target  => "/opt/newrelic/newrelic-${newrelic_version}.jar",
     require => File["${newrelic_app_root_dir}/newrelic"],
   }
