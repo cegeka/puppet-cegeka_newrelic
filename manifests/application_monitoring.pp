@@ -125,6 +125,14 @@ define cegeka_newrelic::application_monitoring(
     group  => $newrelic_app_group,
   }
 
+  file { "${newrelic_app_root_dir}/newrelic/newrelic.jar" :
+    ensure => link,
+    owner  => $newrelic_app_owner,
+    group  => $newrelic_app_group,
+    target  => "/opt/newrelic/newrelic-${newrelic_version}.jar",
+    require => File["${newrelic_app_root_dir}/newrelic"],
+  }
+
   file { "${newrelic_app_root_dir}/newrelic/logs" :
     ensure  => $directory_ensure,
     owner   => $newrelic_app_owner,
@@ -156,7 +164,7 @@ define cegeka_newrelic::application_monitoring(
                                 "${module_name}/application/newrelic.yml.erb",
                               ),
     }
-  }else{
+  } else {
     file { "${newrelic_app_root_dir}/newrelic/newrelic.yml" :
       ensure  => $ensure,
       owner   => $newrelic_app_owner,
